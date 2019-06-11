@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
+#include <bsd/stdlib.h>
 #include "interface.h"
 #include "eprintf.h"
 
@@ -17,24 +18,30 @@ Args *newArgs() {
   Args *args = (Args *)emalloc(sizeof(Args));
   args->h   = 0;
   args->v   = 0;
-  args->err = 0;
-  args->i   = DEFAULT_I;
+  args->err = 1;
+  args->s   = NULL;
+  args->c   = 0;
   return args;
 }
 
 void freeArgs(Args *args) {
+  free(args->s);
   free(args);
 }
 
 Args *getArgs(int argc, char *argv[]) {
   int c;
-  char *optString = "hvi:";
+  char *optString = "hvcs:";
   Args *args = newArgs();
 
   while ((c = getopt(argc, argv, optString)) != -1) {
     switch(c) {
-    case 'i': /* iterations */
-      args->i = atoi(optarg);
+    case 's': /* regular expression */
+      args->s =estrdup(optarg);
+      args->err = 0;
+      break;
+    case 'c':
+      args->c = 1;
       break;
     case 'h': /* help       */
       args->h = 1;
@@ -62,18 +69,19 @@ Args *getArgs(int argc, char *argv[]) {
 }
 
 void printUsage() {
-  printf("Usage: %s [options] [inputFiles]\n", progname());
-  printf("<DESCRIPTION>\n");
-  printf("Example: %s -i 2\n", progname());
+  printf("Usage: %s [options] [inputFiles]\n", getprogname());
+  printf("Get sequence whose header matches a regex\n");
+  printf("Example: %s -s regex foo.fasta\n", getprogname());
   printf("Options:\n");
-  printf("\t[-i <NUM> iterations; default: %d]\n", DEFAULT_I);
+  printf("\t-s <REGEX> search for regular expression]\n");
+  printf("\t[-c complement]\n");
   printf("\t[-h print this help message and exit]\n");
   printf("\t[-v print version & program information and exit]\n");
   exit(0);
 }
 
 void printSplash(Args *args) {
-  printf("%s ", progname());
+  printf("%s ", getprogname());
   int l = strlen(VERSION);
   for(int i = 0; i < l - 1; i++)
     printf("%c", VERSION[i]);

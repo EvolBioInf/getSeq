@@ -1,0 +1,169 @@
+#+begin_src latex
+  \section{Introduction}
+  It is often necessary to extract a specific sequence from a file
+  containing multiple sequences. The program \texttt{getSeq} takes as
+  input a FASTA file containing one or more sequences. It returns all sequences whose header
+  matches the regex. Alternatively, it returns all sequences that don't
+  match.
+  \section{Implementation}
+  The program consists of header includes, a function to scan one input
+  file, and the \texttt{main} function.
+#+end_src
+#+begin_src C <<getSeq.c>>=
+  // <<Includes>>
+  // <<Scan file>>
+  // <<Main function>>
+#+end_src
+#+begin_src latex
+  The \texttt{main} function communicates with the user, compiles the
+  regular expression, and iterates across the input files. It then frees
+  any memory allocated along the way and finally returns 0 for success.
+#+end_src
+#+begin_src C <<Main function>>=
+  int main(int argc, char **argv) {
+    // <<Communicate with the user>>
+    // <<Compile regular expression>>
+    // <<Deal with input files>>
+    // <<Free memory>>
+    return 0;
+  }
+#+end_src
+#+begin_src latex
+  The function \texttt{setprogname} is defined in the BSD standard
+  library.
+#+end_src
+#+begin_src C <<Includes>>=
+  #include <bsd/stdlib.h>
+#+end_src
+#+begin_src latex
+  When communicating with the user, \texttt{getSeq} may need to identify
+  itself, so its name is set for later retrieval. Then comes the actual
+  communication part, where a user might have requested information
+  about the program, or help; (s)he might even have made an error.
+#+end_src
+#+begin_src C <<Communicate with the user>>=
+  setprogname(argv[0]);
+  Args *args = getArgs(argc, argv);
+  if(args->v)
+    printSplash(args);
+  if(args->h || args->err)
+    printUsage();
+#+end_src
+#+begin_src latex
+  The data structure \texttt{Args} holds the arguments set by the
+  user. It is defined in \texttt{interface.h}, together with the
+  functions \texttt{getArgs}, \texttt{printSplash}, and
+  \texttt{printUsage}.
+#+end_src
+#+begin_src C <<Includes>>=
+  #include "interface.h"
+#+end_src
+#+begin_src latex
+  The argument container is eventually freed.
+#+end_src
+#+begin_src C <<Free memory>>=
+  freeArgs(args);
+#+end_src
+#+begin_src latex
+  Before the regular expression is compiled, space is allocated for
+  it. The actual expression is passed via the argument container and is
+  compiled with the extended regular expression syntax. The compilation
+  might fail, in which case the program aborts.
+#+end_src
+#+begin_src C <<Compile regular expression>>=
+  regex_t re;
+  if (regcomp(&re, args->s, REG_EXTENDED) != 0) {
+    fprintf(stderr, "Error[%s] in regex: %s\n",
+	    getprogname(), args->s);
+    exit(EXIT_FAILURE);
+  }
+#+end_src
+#+begin_src latex
+  The function \texttt{emalloc} is defined in the header
+  \texttt{eprintf.h}.
+#+end_src
+#+begin_src C <<Includes>>=
+  #include "eprintf.h"
+#+end_src
+#+begin_src latex
+  Regular expressions are defined in \texttt{regex.h}.
+#+end_src
+#+begin_src C <<Includes>>=
+  #include <regex.h>
+#+end_src
+#+begin_src latex
+  The regular expression is freed after use.
+#+end_src
+#+begin_src C <<Free memory>>=
+  regfree(&re);
+#+end_src
+#+begin_src latex
+  Each input file is searched in turn; if there are no input files, the
+  program reads from the standard input stream.
+#+end_src
+#+begin_src C <<Deal with input files>>=
+  FILE *fp;
+  if (args->nf == 0) {
+    fp = stdin;
+    scanFile(fp, args, &re);
+  } else {
+    for (int i = 0; i < args->nf; i++) {
+      fp = efopen(args->fi[i], "r");
+      scanFile(fp, args, &re);
+      fclose(fp);
+    }
+  }
+#+end_src
+#+begin_src latex
+Files are defined in the standard library.
+#+end_src
+#+begin_src C <<Includes>>=
+  #include <stdio.h>
+#+end_src
+#+begin_src latex
+  The function \texttt{scanFile} iterates across the lines in a
+  file. When it encounters a sequence header, it decides whether or not
+  the header matches the regular expression. In a separate step, the
+  program responds to that decision by printing or not printing.
+#+end_src
+#+begin_src C <<Scan file>>=
+  void scanFile(FILE *fp, Args *args, regex_t *re) {
+    char *line = NULL;
+    size_t len = 0;
+    int match = 0;
+     while (getline(&line, &len, fp) != -1) {
+      if (line[0] == '>') {
+	// <<Decide about match>>
+      }
+      // <<Respond to match>>
+     }
+     free(line);
+  }
+#+end_src
+#+begin_src latex
+  Time to ask, does the header match the regular expression?
+#+end_src
+#+begin_src C <<Decide about match>>=
+  if (regexec(re, line, 0, NULL, 0) == 0)
+    match = 1;
+  else
+    match = 0;
+#+end_src
+#+begin_src latex
+  A matching sequence gets printed if the complement option,
+  \texttt{-c}, is off, and a non-matching sequence gets printed if the
+  complement option is on.
+#+end_src
+#+begin_src C <<Respond to match>>=
+  if ((match && !args->c) || (!match && args->c))
+    printf("%s", line);
+#+end_src
+#+begin_src latex
+  This concludes the implementation of \texttt{getSeq}.
+#+end_src
+#+begin_src latex
+\section{List of code chunks}
+  \nowebchunks
+\section{Index}
+\nowebindex
+#+end_latex

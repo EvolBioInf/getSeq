@@ -5,7 +5,7 @@ CFLAGS         = -DVERSION=\"$(VERSION)\" -DDATE=\"$(DATE)\" -O3 -Wall -Wshadow 
 
 SRCFILES  = getSeq.c interface.c
 OBJFILES  = getSeq.o interface.o
-LIBS      = -lcommon -lm
+LIBS      = -lcommon -lm -lbsd
 EXECFILE  = getSeq
 
 .PHONY : all
@@ -13,6 +13,8 @@ all : $(EXECFILE)
 $(EXECFILE) : $(OBJFILES)
 	$(CC) $(CFLAGS) -o $(EXECFILE) $(OBJFILES) $(LIBS)
 interface.o: interface.h
+getSeq.c: getSeq.org
+	bash ../scripts/org2nw getSeq.org | notangle -RgetSeq.c > getSeq.c
 
 clean:
 	rm -f *.o *~

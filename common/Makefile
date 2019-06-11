@@ -1,8 +1,9 @@
 CF  = -O3 -Wall -Wshadow -pedantic -std=gnu99 -g
-CC  = gcc $(CF)
+LIBS = -libsd
+CC  = gcc $(CF) $(LIBS)
 OBJ = eprintf.o
 libcommon.a: $(OBJ)
-	ar -cvq $@ $^
+	ar -cvq $@ $^ 
 	ranlib $@
 .PHONY: clean
 clean:

@@ -1,41 +1,49 @@
-/***** getSeq.c *************************************************************
- * Description: Get gequence from FASTA file
- * Author: Bernhard Haubold
- * Email: haubold@evolbio.mpg.de
- * License: GNU General Public License, https://www.gnu.org/licenses/gpl.html
- * Date: Sat Jun  8 10:03:38 2019
- ****************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>
+#include <bsd/stdlib.h>
 #include "interface.h"
 #include "eprintf.h"
-
-void scanFile(FILE *fp, Args *args) {
-  for(int i = 0; i < args->i; i++)
-    printf("Test output.\n");
+#include <regex.h>
+#include <stdio.h>
+void scanFile(FILE *fp, Args *args, regex_t *re) {
+  char *line = NULL;
+  size_t len = 0;
+  int match = 0;
+   while (getline(&line, &len, fp) != -1) {
+    if (line[0] == '>') {
+        if (regexec(re, line, 0, NULL, 0) == 0)
+          match = 1;
+        else
+          match = 0;
+    }
+    if ((match && !args->c) || (!match && args->c))
+      printf("%s", line);
+   }
+   free(line);
 }
-
-int main(int argc, char *argv[]){
-  FILE *fp;
+int main(int argc, char **argv) {
+  setprogname(argv[0]);
   Args *args = getArgs(argc, argv);
-
-  setprogname2(argv[0]);
   if(args->v)
     printSplash(args);
   if(args->h || args->err)
     printUsage();
-  if(args->nf == 0) {
+  regex_t re;
+  if (regcomp(&re, args->s, REG_EXTENDED) != 0) {
+    fprintf(stderr, "Error[%s] in regex: %s\n",
+              getprogname(), args->s);
+    exit(EXIT_FAILURE);
+  }
+  FILE *fp;
+  if (args->nf == 0) {
     fp = stdin;
-    scanFile(fp, args);
+    scanFile(fp, args, &re);
   } else {
-    for(int i = 0; i < args->nf; i++) {
+    for (int i = 0; i < args->nf; i++) {
       fp = efopen(args->fi[i], "r");
-      scanFile(fp, args);
+      scanFile(fp, args, &re);
       fclose(fp);
     }
   }
   freeArgs(args);
-  free(progname());
+  regfree(&re);
   return 0;
 }
-

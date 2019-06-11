@@ -11,6 +11,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <bsd/stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include "eprintf.h"
@@ -38,8 +39,8 @@ int eopen(char *fname, int flag){
 void eprintf(char *fmt, ...){
   va_list args;
   fflush(stdout);
-  if(progname() != NULL)
-    fprintf(stderr, "%s: ", progname());
+  if(getprogname() != NULL)
+    fprintf(stderr, "%s: ", getprogname());
   
   va_start(args, fmt);
   vfprintf(stderr, fmt, args);
@@ -79,16 +80,4 @@ void *erealloc(void *p, size_t n){
   if(p == NULL)
     eprintf("realloc of %u bytes failed:", n);
   return p;
-}
-
-static char *name = NULL; /* program name for messages */
-
-/* setprogname2: set stored name of program */
-void setprogname2(char *str){
-  name = estrdup(str);
-}
-
-/* progname: return stured name of program */
-char *progname(void){
-  return name;
 }

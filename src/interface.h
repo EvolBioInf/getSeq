@@ -17,6 +17,8 @@ typedef struct args{
   char  err; /* error                 */
   int     i; /* iterations            */
   char **fi; /* input files           */
+  char   *s; /* regular expression    */
+  char    c; /* complement?           */
   int    nf; /* number of input files */
 } Args;
 

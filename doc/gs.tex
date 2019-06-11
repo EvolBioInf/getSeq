@@ -1,0 +1,155 @@
+\nwfilename{}\nwbegindocs{0}\nwenddocs{}\nwbegindocs{1}\nwdocspar% ===> this file was generated automatically by noweave --- better not edit it
+\section{Introduction}
+It is often necessary to extract a specific sequence from a file
+containing multiple sequences. The program \texttt{getSeq} takes as
+input a file containing one or more sequences in FASTA format and a
+regular expression. It returns all sequences whose header matches the
+regex. Alternatively, it returns all sequences that don't match.
+\section{Implementation}
+The program consists of header includes, a function to scan one input
+file, and the \texttt{main} function.
+\nwenddocs{}\nwbegincode{2}\sublabel{NW0-n7igJ-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-n7igJ-1}}}\moddef{getSeq.c~{\nwtagstyle{}\subpageref{NW0-n7igJ-1}}}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\LA{}Includes~{\nwtagstyle{}\subpageref{NW0-ZKEBO-1}}\RA{}
+\LA{}Scan file~{\nwtagstyle{}\subpageref{NW0-33zymD-1}}\RA{}
+\LA{}Main function~{\nwtagstyle{}\subpageref{NW0-32ejEQ-1}}\RA{}
+\nwnotused{getSeq.c}\nwendcode{}\nwbegindocs{3}\nwdocspar
+The \texttt{main} function communicates with the user, compiles the
+regular expression, and iterates across the input files. It then frees
+any memory allocated along the way and finally returns 0 for success.
+\nwenddocs{}\nwbegincode{4}\sublabel{NW0-32ejEQ-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-32ejEQ-1}}}\moddef{Main function~{\nwtagstyle{}\subpageref{NW0-32ejEQ-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-n7igJ-1}}\nwenddeflinemarkup
+int \nwlinkedidentc{main}{NW0-32ejEQ-1}(int argc, char **argv) \{\nwindexdefn{\nwixident{main}}{main}{NW0-32ejEQ-1}
+  \LA{}Communicate with the user~{\nwtagstyle{}\subpageref{NW0-3amXCM-1}}\RA{}
+  \LA{}Compile regular expression~{\nwtagstyle{}\subpageref{NW0-20j1hD-1}}\RA{}
+  \LA{}Deal with input files~{\nwtagstyle{}\subpageref{NW0-4EgRTZ-1}}\RA{}
+  \LA{}Free memory~{\nwtagstyle{}\subpageref{NW0-Dn4oa-1}}\RA{}
+  return 0;
+\}
+\nwused{\\{NW0-n7igJ-1}}\nwidentdefs{\\{{\nwixident{main}}{main}}}\nwendcode{}\nwbegindocs{5}\nwdocspar
+The function \texttt{setprogname} is defined in the BSD standard
+library.
+\nwenddocs{}\nwbegincode{6}\sublabel{NW0-ZKEBO-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-ZKEBO-1}}}\moddef{Includes~{\nwtagstyle{}\subpageref{NW0-ZKEBO-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-n7igJ-1}}\nwprevnextdefs{\relax}{NW0-ZKEBO-2}\nwenddeflinemarkup
+#include <bsd/stdlib.h>
+\nwalsodefined{\\{NW0-ZKEBO-2}\\{NW0-ZKEBO-3}\\{NW0-ZKEBO-4}\\{NW0-ZKEBO-5}}\nwused{\\{NW0-n7igJ-1}}\nwendcode{}\nwbegindocs{7}\nwdocspar
+When communicating with the user, the program may need to identify
+itself, so its name is set for later retrieval. Then comes the actual
+communication part, where a user might have requested information
+about the program or help; (s)he might even have made an error.
+\nwenddocs{}\nwbegincode{8}\sublabel{NW0-3amXCM-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3amXCM-1}}}\moddef{Communicate with the user~{\nwtagstyle{}\subpageref{NW0-3amXCM-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwenddeflinemarkup
+setprogname(argv[0]);
+Args *\nwlinkedidentc{args}{NW0-3amXCM-1} = getArgs(argc, argv);\nwindexdefn{\nwixident{args}}{args}{NW0-3amXCM-1}
+if(\nwlinkedidentc{args}{NW0-3amXCM-1}->v)
+  printSplash(\nwlinkedidentc{args}{NW0-3amXCM-1});
+if(\nwlinkedidentc{args}{NW0-3amXCM-1}->h || \nwlinkedidentc{args}{NW0-3amXCM-1}->err)
+  printUsage();
+\nwused{\\{NW0-32ejEQ-1}}\nwidentdefs{\\{{\nwixident{args}}{args}}}\nwendcode{}\nwbegindocs{9}\nwdocspar
+The data structure \texttt{Args} holds the arguments set by the
+user. It is defined in \texttt{interface.h}, together with the
+functions \texttt{getArgs}, \texttt{printSplash}, and
+\texttt{printUsage}.
+\nwenddocs{}\nwbegincode{10}\sublabel{NW0-ZKEBO-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-ZKEBO-2}}}\moddef{Includes~{\nwtagstyle{}\subpageref{NW0-ZKEBO-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-n7igJ-1}}\nwprevnextdefs{NW0-ZKEBO-1}{NW0-ZKEBO-3}\nwenddeflinemarkup
+#include "interface.h"
+\nwused{\\{NW0-n7igJ-1}}\nwendcode{}\nwbegindocs{11}\nwdocspar
+The argument container is eventually freed.
+\nwenddocs{}\nwbegincode{12}\sublabel{NW0-Dn4oa-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-Dn4oa-1}}}\moddef{Free memory~{\nwtagstyle{}\subpageref{NW0-Dn4oa-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwprevnextdefs{\relax}{NW0-Dn4oa-2}\nwenddeflinemarkup
+freeArgs(\nwlinkedidentc{args}{NW0-3amXCM-1});
+\nwalsodefined{\\{NW0-Dn4oa-2}}\nwused{\\{NW0-32ejEQ-1}}\nwidentuses{\\{{\nwixident{args}}{args}}}\nwindexuse{\nwixident{args}}{args}{NW0-Dn4oa-1}\nwendcode{}\nwbegindocs{13}\nwdocspar
+For the regular expression, space is needed first. The actual
+expression is passed via the argument container and is compiled with
+the extended regular expression syntax. The compilation might fail, in
+which case the program aborts.
+\nwenddocs{}\nwbegincode{14}\sublabel{NW0-20j1hD-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-20j1hD-1}}}\moddef{Compile regular expression~{\nwtagstyle{}\subpageref{NW0-20j1hD-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwenddeflinemarkup
+regex_t *re;
+re = (regex_t *)emalloc(sizeof(regex_t));
+if (regcomp(re, \nwlinkedidentc{args}{NW0-3amXCM-1}->s, REG_EXTENDED) != 0) \{
+  fprintf(stderr, "Error[%s] in regex: %s\\n",
+            getprogname(), \nwlinkedidentc{args}{NW0-3amXCM-1}->s);
+  exit(EXIT_FAILURE);
+\}
+\nwused{\\{NW0-32ejEQ-1}}\nwidentuses{\\{{\nwixident{args}}{args}}}\nwindexuse{\nwixident{args}}{args}{NW0-20j1hD-1}\nwendcode{}\nwbegindocs{15}\nwdocspar
+The function \texttt{emalloc} is defined in the header
+\texttt{eprintf.h}.
+\nwenddocs{}\nwbegincode{16}\sublabel{NW0-ZKEBO-3}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-ZKEBO-3}}}\moddef{Includes~{\nwtagstyle{}\subpageref{NW0-ZKEBO-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-n7igJ-1}}\nwprevnextdefs{NW0-ZKEBO-2}{NW0-ZKEBO-4}\nwenddeflinemarkup
+#include "eprintf.h"
+\nwused{\\{NW0-n7igJ-1}}\nwendcode{}\nwbegindocs{17}\nwdocspar
+Usage of regular expressions depends on two headers,
+\texttt{sys/types.h} and \texttt{regex.h}.
+\nwenddocs{}\nwbegincode{18}\sublabel{NW0-ZKEBO-4}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-ZKEBO-4}}}\moddef{Includes~{\nwtagstyle{}\subpageref{NW0-ZKEBO-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-n7igJ-1}}\nwprevnextdefs{NW0-ZKEBO-3}{NW0-ZKEBO-5}\nwenddeflinemarkup
+#include <sys/types.h>
+#include <regex.h>
+\nwused{\\{NW0-n7igJ-1}}\nwendcode{}\nwbegindocs{19}\nwdocspar
+The regular expression is freed after use.
+\nwenddocs{}\nwbegincode{20}\sublabel{NW0-Dn4oa-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-Dn4oa-2}}}\moddef{Free memory~{\nwtagstyle{}\subpageref{NW0-Dn4oa-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwprevnextdefs{NW0-Dn4oa-1}{\relax}\nwenddeflinemarkup
+regfree(re);
+\nwused{\\{NW0-32ejEQ-1}}\nwendcode{}\nwbegindocs{21}\nwdocspar
+Each input file is searched in turn.
+\nwenddocs{}\nwbegincode{22}\sublabel{NW0-4EgRTZ-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-4EgRTZ-1}}}\moddef{Deal with input files~{\nwtagstyle{}\subpageref{NW0-4EgRTZ-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwenddeflinemarkup
+FILE *\nwlinkedidentc{fp}{NW0-4EgRTZ-1};\nwindexdefn{\nwixident{fp}}{fp}{NW0-4EgRTZ-1}
+if (\nwlinkedidentc{args}{NW0-3amXCM-1}->nf == 0) \{
+  \nwlinkedidentc{fp}{NW0-4EgRTZ-1} = stdin;
+  \nwlinkedidentc{scanFile}{NW0-33zymD-1}(\nwlinkedidentc{fp}{NW0-4EgRTZ-1}, \nwlinkedidentc{args}{NW0-3amXCM-1}, re);
+\} else \{
+  for (int i = 0; i < \nwlinkedidentc{args}{NW0-3amXCM-1}->nf; i++) \{
+    \nwlinkedidentc{fp}{NW0-4EgRTZ-1} = efopen(\nwlinkedidentc{args}{NW0-3amXCM-1}->fi[i], "r");
+    \nwlinkedidentc{scanFile}{NW0-33zymD-1}(\nwlinkedidentc{fp}{NW0-4EgRTZ-1}, \nwlinkedidentc{args}{NW0-3amXCM-1}, re);
+    fclose(\nwlinkedidentc{fp}{NW0-4EgRTZ-1});
+  \}
+\}
+\nwused{\\{NW0-32ejEQ-1}}\nwidentdefs{\\{{\nwixident{fp}}{fp}}}\nwidentuses{\\{{\nwixident{args}}{args}}\\{{\nwixident{scanFile}}{scanFile}}}\nwindexuse{\nwixident{args}}{args}{NW0-4EgRTZ-1}\nwindexuse{\nwixident{scanFile}}{scanFile}{NW0-4EgRTZ-1}\nwendcode{}\nwbegindocs{23}\nwdocspar
+Files are defined in the standard library.
+\nwenddocs{}\nwbegincode{24}\sublabel{NW0-ZKEBO-5}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-ZKEBO-5}}}\moddef{Includes~{\nwtagstyle{}\subpageref{NW0-ZKEBO-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-n7igJ-1}}\nwprevnextdefs{NW0-ZKEBO-4}{\relax}\nwenddeflinemarkup
+#include <stdio.h>
+\nwused{\\{NW0-n7igJ-1}}\nwendcode{}\nwbegindocs{25}\nwdocspar
+    The function \texttt{scanFile} iterates across the lines in a
+    file. When it encounters a sequence header, it decides whether the
+    corresponding sequence is printed. 
+\nwenddocs{}\nwbegincode{26}\sublabel{NW0-33zymD-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-33zymD-1}}}\moddef{Scan file~{\nwtagstyle{}\subpageref{NW0-33zymD-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-n7igJ-1}}\nwenddeflinemarkup
+void \nwlinkedidentc{scanFile}{NW0-33zymD-1}(FILE *\nwlinkedidentc{fp}{NW0-4EgRTZ-1}, Args *\nwlinkedidentc{args}{NW0-3amXCM-1}, regex_t *re) \{\nwindexdefn{\nwixident{scanFile}}{scanFile}{NW0-33zymD-1}
+  static char *line = NULL;
+  size_t len = 0;
+  int match = 0;
+   while (getline(&line, &len, \nwlinkedidentc{fp}{NW0-4EgRTZ-1}) != -1) \{
+    if (line[0] == '>') \{
+        \LA{}Decide about match~{\nwtagstyle{}\subpageref{NW0-2Y1GqX-1}}\RA{}
+    \}
+    \LA{}Respond to match~{\nwtagstyle{}\subpageref{NW0-3Xa1TF-1}}\RA{}
+   \}
+\}
+\nwused{\\{NW0-n7igJ-1}}\nwidentdefs{\\{{\nwixident{scanFile}}{scanFile}}}\nwidentuses{\\{{\nwixident{args}}{args}}\\{{\nwixident{fp}}{fp}}}\nwindexuse{\nwixident{args}}{args}{NW0-33zymD-1}\nwindexuse{\nwixident{fp}}{fp}{NW0-33zymD-1}\nwendcode{}\nwbegindocs{27}\nwdocspar
+    Decide whether or not a header line is a match by using a function of
+    the \texttt{regex} library.
+\nwenddocs{}\nwbegincode{28}\sublabel{NW0-2Y1GqX-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-2Y1GqX-1}}}\moddef{Decide about match~{\nwtagstyle{}\subpageref{NW0-2Y1GqX-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-33zymD-1}}\nwenddeflinemarkup
+if (regexec(re, line, 0, NULL, 0) == 0)
+  match = 1;
+else
+  match = 0;
+\nwused{\\{NW0-33zymD-1}}\nwendcode{}\nwbegindocs{29}\nwdocspar
+A matching sequence gets printed if the \emph{complement} option is
+off, and a non-matching sequence gets printed if the complement option
+is on.
+\nwenddocs{}\nwbegincode{30}\sublabel{NW0-3Xa1TF-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3Xa1TF-1}}}\moddef{Respond to match~{\nwtagstyle{}\subpageref{NW0-3Xa1TF-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-33zymD-1}}\nwenddeflinemarkup
+if ((match && !\nwlinkedidentc{args}{NW0-3amXCM-1}->c) || (!match && \nwlinkedidentc{args}{NW0-3amXCM-1}->c))
+  printf("%s", line);
+\nwused{\\{NW0-33zymD-1}}\nwidentuses{\\{{\nwixident{args}}{args}}}\nwindexuse{\nwixident{args}}{args}{NW0-3Xa1TF-1}\nwendcode{}\nwbegindocs{31}\nwdocspar
+This concludes the implementation of \texttt{getSeq}.
+\nwenddocs{}\nwbegindocs{32}\nwdocspar
+\section{List of code chunks}
+\nowebchunks
+\section{Index}
+\nowebindex
+\nwenddocs{}
+
+\nwixlogsorted{c}{{Communicate with the user}{NW0-3amXCM-1}{\nwixu{NW0-32ejEQ-1}\nwixd{NW0-3amXCM-1}}}%
+\nwixlogsorted{c}{{Compile regular expression}{NW0-20j1hD-1}{\nwixu{NW0-32ejEQ-1}\nwixd{NW0-20j1hD-1}}}%
+\nwixlogsorted{c}{{Deal with input files}{NW0-4EgRTZ-1}{\nwixu{NW0-32ejEQ-1}\nwixd{NW0-4EgRTZ-1}}}%
+\nwixlogsorted{c}{{Decide about match}{NW0-2Y1GqX-1}{\nwixu{NW0-33zymD-1}\nwixd{NW0-2Y1GqX-1}}}%
+\nwixlogsorted{c}{{Free memory}{NW0-Dn4oa-1}{\nwixu{NW0-32ejEQ-1}\nwixd{NW0-Dn4oa-1}\nwixd{NW0-Dn4oa-2}}}%
+\nwixlogsorted{c}{{getSeq.c}{NW0-n7igJ-1}{\nwixd{NW0-n7igJ-1}}}%
+\nwixlogsorted{c}{{Includes}{NW0-ZKEBO-1}{\nwixu{NW0-n7igJ-1}\nwixd{NW0-ZKEBO-1}\nwixd{NW0-ZKEBO-2}\nwixd{NW0-ZKEBO-3}\nwixd{NW0-ZKEBO-4}\nwixd{NW0-ZKEBO-5}}}%
+\nwixlogsorted{c}{{Main function}{NW0-32ejEQ-1}{\nwixu{NW0-n7igJ-1}\nwixd{NW0-32ejEQ-1}}}%
+\nwixlogsorted{c}{{Respond to match}{NW0-3Xa1TF-1}{\nwixu{NW0-33zymD-1}\nwixd{NW0-3Xa1TF-1}}}%
+\nwixlogsorted{c}{{Scan file}{NW0-33zymD-1}{\nwixu{NW0-n7igJ-1}\nwixd{NW0-33zymD-1}}}%
+\nwixlogsorted{i}{{\nwixident{args}}{args}}%
+\nwixlogsorted{i}{{\nwixident{fp}}{fp}}%
+\nwixlogsorted{i}{{\nwixident{main}}{main}}%
+\nwixlogsorted{i}{{\nwixident{scanFile}}{scanFile}}%
+

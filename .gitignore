@@ -8,3 +8,4 @@ doc/*.pdf
 doc/date.tex
 doc/version.tex
 src/getSeq
+src/getSeq.val
