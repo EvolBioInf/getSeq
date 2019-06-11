@@ -2,7 +2,7 @@
 ## Author
 Bernhard Haubold, `haubold@evolbio.mpg.de`
 ## Description
-DESCRIPTION
+Get sequence from FASTA file.
 ## Compile
 Compile the sources using `make`; the executable `getSeq` is now in the directory `build`
 ## Documentation
